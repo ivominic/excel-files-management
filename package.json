@@ -1,0 +1,26 @@
+{
+  "name": "excel-files-management",
+  "version": "1.0.0",
+  "description": "various manipulations with excel files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivominic/excel-files-management.git"
+  },
+  "keywords": [
+    "excel",
+    "files"
+  ],
+  "author": "Ivo Minić",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ivominic/excel-files-management/issues"
+  },
+  "homepage": "https://github.com/ivominic/excel-files-management#readme",
+  "dependencies": {
+    "read-excel-file": "^5.5.3"
+  }
+}
