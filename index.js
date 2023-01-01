@@ -5,9 +5,13 @@ const rootFolder = "/home/ivo/Desktop/nffis-excel/";
 const firstFolder = "/home/ivo/Desktop/nffis-excel/1101/";
 let currentFile = "GranicneLinije.xlsx";
 let currentTitle = "";
+let titleArray;
+let promiseArray = [];
+let dataArray = [];
+let isThereDifferentColumns = false;
 //Iterate through subfolders
-//TODO: Check if excel file is empty (only one row with column titles)
-//TODO: Delete empty files
+//Check if excel file is empty (only one row with column titles)
+//Delete empty files
 //TODO: Check missing columns in files with same name, or any difference in column names or order
 //return JSON.stringify(a1)==JSON.stringify(a2);
 //TODO: Append content of all files with the same name to the first file
@@ -28,6 +32,14 @@ let currentTitle = "";
     currentDir.closeSync();
   }
   rootDir.closeSync();
+
+  Promise.all(promiseArray).then(function () {
+    if (isThereDifferentColumns) {
+      console.log("There are files with difference in column names. It needs to be corrected.");
+    } else {
+      console.log("LENGTH", dataArray.length);
+    }
+  });
 })();
 
 /**
@@ -36,20 +48,30 @@ let currentTitle = "";
  * @param {*} filePath
  */
 async function checkColumnTitles(filePath) {
-  readXlsxFile(filePath)
-    .then((rows) => {
-      if (currentTitle) {
-        if (currentTitle !== JSON.stringify(rows[0])) {
-          console.log(filePath, JSON.stringify(rows[0]));
+  promiseArray.push(
+    readXlsxFile(filePath)
+      .then((rows) => {
+        if (currentTitle) {
+          if (currentTitle !== JSON.stringify(rows[0])) {
+            console.log(filePath, JSON.stringify(rows[0]));
+            isThereDifferentColumns = true;
+          }
+          dataArray = dataArray.concat(rows.slice(1));
+          console.log(filePath, rows.length);
+          console.log("dataLength", dataArray.length);
+        } else {
+          currentTitle = JSON.stringify(rows[0]);
+          titleArray = [...rows[0]];
+          dataArray = [...rows];
+          console.log("MAIN length", rows.length);
+          console.log("MAIN file", filePath);
+          console.log("MAIN TITLE", currentTitle);
         }
-      } else {
-        currentTitle = JSON.stringify(rows[0]);
-        console.log("MAIN TITLE", currentTitle);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  );
 }
 
 /**
