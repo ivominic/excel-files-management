@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ivominic/excel-files-management#readme",
   "dependencies": {
-    "read-excel-file": "^5.5.3"
+    "read-excel-file": "^5.5.3",
+    "xlsx": "^0.18.5"
   }
 }

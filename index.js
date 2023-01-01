@@ -1,20 +1,21 @@
 const fs = require("fs");
 const readXlsxFile = require("read-excel-file/node");
+const xlsx = require("xlsx");
 
 const rootFolder = "/home/ivo/Desktop/nffis-excel/";
-const firstFolder = "/home/ivo/Desktop/nffis-excel/1101/";
-let currentFile = "GranicneLinije.xlsx";
+let currentFile = "Indikacija.xlsx";
 let currentTitle = "";
-let titleArray;
 let promiseArray = [];
 let dataArray = [];
 let isThereDifferentColumns = false;
+let completedFilesArray = ["GranicneLinije.xlsx"];
+
 //Iterate through subfolders
 //Check if excel file is empty (only one row with column titles)
 //Delete empty files
-//TODO: Check missing columns in files with same name, or any difference in column names or order
+//Check missing columns in files with same name, or any difference in column names or order
 //return JSON.stringify(a1)==JSON.stringify(a2);
-//TODO: Append content of all files with the same name to the first file
+//Create new file in root dir with the same name and content from all the other files with the same name.
 
 (async function iterateFiles() {
   const rootDir = fs.opendirSync(rootFolder);
@@ -38,6 +39,10 @@ let isThereDifferentColumns = false;
       console.log("There are files with difference in column names. It needs to be corrected.");
     } else {
       console.log("LENGTH", dataArray.length);
+      const workSheet = xlsx.utils.aoa_to_sheet(dataArray);
+      const workBook = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(workBook, workSheet, currentFile.split(".")[0]);
+      xlsx.writeFile(workBook, rootFolder + currentFile);
     }
   });
 })();
@@ -61,7 +66,6 @@ async function checkColumnTitles(filePath) {
           console.log("dataLength", dataArray.length);
         } else {
           currentTitle = JSON.stringify(rows[0]);
-          titleArray = [...rows[0]];
           dataArray = [...rows];
           console.log("MAIN length", rows.length);
           console.log("MAIN file", filePath);
